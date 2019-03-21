@@ -1,7 +1,6 @@
 import tkinter
 import os
 from tkinter import messagebox as mb
-import time
 
 try:
     f = open("save.txt", 'x')
@@ -104,7 +103,11 @@ def update_display():
     global playflag
     global sleepflag
 
-    if feedflag == 1:
+    if deathflag == 1:
+        Picture.config(image=death)
+        Picture.after(100, update_display)
+
+    elif feedflag == 1:
         Picture.config(image=iameating)
     elif playflag == 1:
         Picture.config(image=iamplaying)
@@ -125,7 +128,7 @@ def update_display():
             Picture.config(image=sad)
 
     hungerLabel.config(text="Я сыт на " + str(hunger) + " %")
-    yearLabel.config(text="Мне уже " + str(year) + " лет!")
+    yearLabel.config(text="Мне уже " + str(year) + year_end())
     energyLabel.config(text="Бодрость: " + str(energy) + " %")
     happyLabel.config(text="Счастье: " + str(happy) + " %")
 
@@ -136,7 +139,7 @@ def update_display():
         Picture.after(1000, update_display)
         playflag = 0
     elif sleepflag == 1:
-        Picture.after(5000, update_display)
+        Picture.after(2500, update_display)
         sleepflag = 0
     else:
         Picture.after(300, update_display)
@@ -206,6 +209,7 @@ def sleep():
 
     sleepflag = 1
 
+
 def play():
     global happy
     global playflag
@@ -219,12 +223,25 @@ def play():
 
 def is_alive():
     global hunger
+    global deathflag
 
     if hunger <= 0:
-        startLabel.config(text=str(result) + " погиб...")
+        deathflag = 1
+        startLabel.config(text=(str(result).title()) + " погиб...")
         return False
     else:
         return True
+
+
+def year_end():
+    global year
+
+    if str(year)[len(str(year)) - 1] == '1':
+        return " год!"
+    if ord(str(year)[len(str(year)) - 1]) in range(ord('2'), ord('5')):
+        return " года!"
+    else:
+        return " лет!"
 
 
 root = tkinter.Tk()
@@ -237,7 +254,7 @@ startLabel.pack()
 hungerLabel = tkinter.Label(root, text="Я сыт на " + str(hunger) + " %", font=('Times New Roman', 25))
 hungerLabel.pack()
 
-yearLabel = tkinter.Label(root, text="Мне уже " + str(year) + " лет!", font=('Times New Roman', 25))
+yearLabel = tkinter.Label(root, text="Мне уже " + str(year) + year_end(), font=('Times New Roman', 25))
 yearLabel.pack()
 
 energyLabel = tkinter.Label(root, text="Бодрость: " + str(energy) + " %", font=('Times New Roman', 25))
@@ -255,7 +272,7 @@ iwanttosleep = tkinter.PhotoImage(file="iwanttosleep.gif")
 iameating = tkinter.PhotoImage(file="iameating.gif")
 iamplaying = tkinter.PhotoImage(file="iamplaying.gif")
 iamsleeping = tkinter.PhotoImage(file="iamsleeping.gif")
-
+death = tkinter.PhotoImage(file="death.gif")
 
 Picture = tkinter.Label(root, image=normalphoto)
 Picture.pack()

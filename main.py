@@ -1,6 +1,7 @@
 import tkinter
 import os
 from tkinter import messagebox as mb
+import time
 
 try:
     f = open("save.txt", 'x')
@@ -22,6 +23,7 @@ except FileExistsError:
 f.close()
 
 pressforstart = True  # проверяем, что кнопка начала работы была нажата единожды
+flag = 0
 
 
 class CustomDialog(object):
@@ -94,28 +96,38 @@ def start_game(start):
 
 def update_display():
 
+
     global year
     global hunger
+    global flag
 
-    if hunger >= 80 and energy >= 70 and happy >= 70:
-        Picture.config(image=happyphoto)
-    elif hunger < 50 and energy < 50 and happy < 50:
-        Picture.config(image=iamill)
-    elif hunger >= 50 and energy >= 50 and happy >= 50:
-        Picture.config(image=normalphoto)
-    elif hunger < 50:
-        Picture.config(image=iwanttoeat)
-    elif energy < 50:
-        Picture.config(image=iwanttosleep)
-    elif happy < 50:
-        Picture.config(image=sad)
+    if flag == 1:
+        Picture.config(image=iameating)
+    else:
+        if hunger >= 80 and energy >= 70 and happy >= 70:
+            Picture.config(image=happyphoto)
+        elif hunger < 50 and energy < 50 and happy < 50:
+            Picture.config(image=iamill)
+        elif hunger >= 50 and energy >= 50 and happy >= 50:
+            Picture.config(image=normalphoto)
+        elif hunger < 50:
+            Picture.config(image=iwanttoeat)
+        elif energy < 50:
+            Picture.config(image=iwanttosleep)
+        elif happy < 50:
+            Picture.config(image=sad)
 
     hungerLabel.config(text="Я сыт на " + str(hunger) + " %")
     yearLabel.config(text="Мне уже " + str(year) + " лет!")
     energyLabel.config(text="Бодрость: " + str(energy) + " %")
     happyLabel.config(text="Счастье: " + str(happy) + " %")
 
-    Picture.after(100, update_display)
+    if flag == 1:
+        Picture.after(1000, update_display)
+        flag = 0
+
+    else:
+        Picture.after(300, update_display)
 
 
 def update_hunger():
@@ -126,7 +138,7 @@ def update_hunger():
         hunger -= 1
 
     if is_alive():
-        hungerLabel.after(500, update_hunger)
+        hungerLabel.after(1000, update_hunger)
 
 
 def update_year():
@@ -146,7 +158,7 @@ def update_energy():
         energy -= 1
 
     if is_alive():
-        energyLabel.after(500, update_energy)
+        energyLabel.after(1000, update_energy)
 
 
 def update_happy():
@@ -157,23 +169,22 @@ def update_happy():
         happy -= 1
 
     if is_alive():
-        happyLabel.after(500, update_happy)
+        happyLabel.after(1000, update_happy)
 
 
 def feed():
     global hunger
+    global flag
 
     Picture.config(image=iameating)
+    flag = 1
 
-    def feed1():
-        if is_alive():
-            global hunger
-            if hunger <= 95:
-                hunger += 5
+    if is_alive():
+        global hunger
+        if hunger <= 95:
+            hunger += 5
 
     Picture.after(1000)
-    Picture.pack()
-    feed1()
 
 
 def sleep():

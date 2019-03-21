@@ -171,7 +171,9 @@ def feed():
             if hunger <= 95:
                 hunger += 5
 
-    Picture.after(100, feed1)
+    Picture.after(1000)
+    Picture.pack()
+    feed1()
 
 
 def sleep():

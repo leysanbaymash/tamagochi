@@ -23,7 +23,10 @@ except FileExistsError:
 f.close()
 
 pressforstart = True  # проверяем, что кнопка начала работы была нажата единожды
-flag = 0
+feedflag = 0
+playflag = 0
+sleepflag = 0
+deathflag = 0
 
 
 class CustomDialog(object):
@@ -95,14 +98,18 @@ def start_game(start):
 
 
 def update_display():
-
-
     global year
     global hunger
-    global flag
+    global feedflag
+    global playflag
+    global sleepflag
 
-    if flag == 1:
+    if feedflag == 1:
         Picture.config(image=iameating)
+    elif playflag == 1:
+        Picture.config(image=iamplaying)
+    elif sleepflag == 1:
+        Picture.config(image=iamsleeping)
     else:
         if hunger >= 80 and energy >= 70 and happy >= 70:
             Picture.config(image=happyphoto)
@@ -122,10 +129,15 @@ def update_display():
     energyLabel.config(text="Бодрость: " + str(energy) + " %")
     happyLabel.config(text="Счастье: " + str(happy) + " %")
 
-    if flag == 1:
+    if feedflag == 1:
         Picture.after(1000, update_display)
-        flag = 0
-
+        feedflag = 0
+    elif playflag == 1:
+        Picture.after(1000, update_display)
+        playflag = 0
+    elif sleepflag == 1:
+        Picture.after(5000, update_display)
+        sleepflag = 0
     else:
         Picture.after(300, update_display)
 
@@ -147,7 +159,7 @@ def update_year():
     year += 1
 
     if is_alive():
-        yearLabel.after(10000, update_year)
+        yearLabel.after(80000, update_year)
 
 
 def update_energy():
@@ -158,7 +170,7 @@ def update_energy():
         energy -= 1
 
     if is_alive():
-        energyLabel.after(1000, update_energy)
+        energyLabel.after(2000, update_energy)
 
 
 def update_happy():
@@ -174,33 +186,35 @@ def update_happy():
 
 def feed():
     global hunger
-    global flag
+    global feedflag
 
-    Picture.config(image=iameating)
-    flag = 1
+    feedflag = 1
 
     if is_alive():
         global hunger
-        if hunger <= 95:
-            hunger += 5
-
-    Picture.after(1000)
+        if hunger <= 93:
+            hunger += 7
 
 
 def sleep():
     global energy
+    global sleepflag
 
     if is_alive():
         if energy <= 80:
             energy += 20
 
+    sleepflag = 1
 
 def play():
     global happy
+    global playflag
 
     if is_alive():
         if happy <= 90:
             happy += 10
+
+    playflag = 1
 
 
 def is_alive():
@@ -239,6 +253,9 @@ sad = tkinter.PhotoImage(file="sad.gif")
 iwanttoeat = tkinter.PhotoImage(file="iwanttoeat.gif")
 iwanttosleep = tkinter.PhotoImage(file="iwanttosleep.gif")
 iameating = tkinter.PhotoImage(file="iameating.gif")
+iamplaying = tkinter.PhotoImage(file="iamplaying.gif")
+iamsleeping = tkinter.PhotoImage(file="iamsleeping.gif")
+
 
 Picture = tkinter.Label(root, image=normalphoto)
 Picture.pack()

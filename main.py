@@ -22,6 +22,10 @@ except FileExistsError:
 f.close()
 
 pressforstart = True  # проверяем, что кнопка начала работы была нажата единожды
+feedflag = 0
+playflag = 0
+sleepflag = 0
+deathflag = 0
 
 
 class CustomDialog(object):
@@ -93,29 +97,52 @@ def start_game(start):
 
 
 def update_display():
-
     global year
     global hunger
+    global feedflag
+    global playflag
+    global sleepflag
 
-    if hunger >= 80 and energy >= 70 and happy >= 70:
-        Picture.config(image=happyphoto)
-    elif hunger < 50 and energy < 50 and happy < 50:
-        Picture.config(image=iamill)
-    elif hunger >= 50 and energy >= 50 and happy >= 50:
-        Picture.config(image=normalphoto)
-    elif hunger < 50:
-        Picture.config(image=iwanttoeat)
-    elif energy < 50:
-        Picture.config(image=iwanttosleep)
-    elif happy < 50:
-        Picture.config(image=sad)
+    if deathflag == 1:
+        Picture.config(image=death)
+        Picture.after(100, update_display)
+
+    elif feedflag == 1:
+        Picture.config(image=iameating)
+    elif playflag == 1:
+        Picture.config(image=iamplaying)
+    elif sleepflag == 1:
+        Picture.config(image=iamsleeping)
+    else:
+        if hunger >= 80 and energy >= 70 and happy >= 70:
+            Picture.config(image=happyphoto)
+        elif hunger < 50 and energy < 50 and happy < 50:
+            Picture.config(image=iamill)
+        elif hunger >= 50 and energy >= 50 and happy >= 50:
+            Picture.config(image=normalphoto)
+        elif hunger < 50:
+            Picture.config(image=iwanttoeat)
+        elif energy < 50:
+            Picture.config(image=iwanttosleep)
+        elif happy < 50:
+            Picture.config(image=sad)
 
     hungerLabel.config(text="Я сыт на " + str(hunger) + " %")
-    yearLabel.config(text="Мне уже " + str(year) + " лет!")
+    yearLabel.config(text="Мне уже " + str(year) + year_end())
     energyLabel.config(text="Бодрость: " + str(energy) + " %")
     happyLabel.config(text="Счастье: " + str(happy) + " %")
 
-    Picture.after(100, update_display)
+    if feedflag == 1:
+        Picture.after(1000, update_display)
+        feedflag = 0
+    elif playflag == 1:
+        Picture.after(1000, update_display)
+        playflag = 0
+    elif sleepflag == 1:
+        Picture.after(2500, update_display)
+        sleepflag = 0
+    else:
+        Picture.after(300, update_display)
 
 
 def update_hunger():
@@ -126,7 +153,7 @@ def update_hunger():
         hunger -= 1
 
     if is_alive():
-        hungerLabel.after(500, update_hunger)
+        hungerLabel.after(1000, update_hunger)
 
 
 def update_year():
@@ -135,7 +162,7 @@ def update_year():
     year += 1
 
     if is_alive():
-        yearLabel.after(10000, update_year)
+        yearLabel.after(80000, update_year)
 
 
 def update_energy():
@@ -146,7 +173,7 @@ def update_energy():
         energy -= 1
 
     if is_alive():
-        energyLabel.after(500, update_energy)
+        energyLabel.after(2000, update_energy)
 
 
 def update_happy():
@@ -157,47 +184,64 @@ def update_happy():
         happy -= 1
 
     if is_alive():
-        happyLabel.after(500, update_happy)
+        happyLabel.after(1000, update_happy)
 
 
 def feed():
     global hunger
+    global feedflag
 
-    Picture.config(image=iameating)
+    feedflag = 1
 
-    def feed1():
-        if is_alive():
-            global hunger
-            if hunger <= 95:
-                hunger += 5
-
-    Picture.after(100, feed1)
+    if is_alive():
+        global hunger
+        if hunger <= 93:
+            hunger += 7
 
 
 def sleep():
     global energy
+    global sleepflag
 
     if is_alive():
         if energy <= 80:
             energy += 20
 
+    sleepflag = 1
+
 
 def play():
     global happy
+    global playflag
 
     if is_alive():
         if happy <= 90:
             happy += 10
 
+    playflag = 1
+
 
 def is_alive():
     global hunger
+    global deathflag
 
     if hunger <= 0:
-        startLabel.config(text=str(result) + " погиб...")
+        deathflag = 1
+        startLabel.config(text=(str(result).title()) + " погиб...")
         return False
     else:
         return True
+
+
+def year_end():
+    global year
+
+    if str(year)[len(str(year)) - 1] == '1':
+        return " год!"
+    if ord(str(year)[len(str(year)) - 1]) in range(ord('2'), ord('5')):
+        return " года!"
+    else:
+        return " лет!"
 
 
 root = tkinter.Tk()
@@ -210,7 +254,7 @@ startLabel.pack()
 hungerLabel = tkinter.Label(root, text="Я сыт на " + str(hunger) + " %", font=('Times New Roman', 25))
 hungerLabel.pack()
 
-yearLabel = tkinter.Label(root, text="Мне уже " + str(year) + " лет!", font=('Times New Roman', 25))
+yearLabel = tkinter.Label(root, text="Мне уже " + str(year) + year_end(), font=('Times New Roman', 25))
 yearLabel.pack()
 
 energyLabel = tkinter.Label(root, text="Бодрость: " + str(energy) + " %", font=('Times New Roman', 25))
@@ -226,6 +270,9 @@ sad = tkinter.PhotoImage(file="sad.gif")
 iwanttoeat = tkinter.PhotoImage(file="iwanttoeat.gif")
 iwanttosleep = tkinter.PhotoImage(file="iwanttosleep.gif")
 iameating = tkinter.PhotoImage(file="iameating.gif")
+iamplaying = tkinter.PhotoImage(file="iamplaying.gif")
+iamsleeping = tkinter.PhotoImage(file="iamsleeping.gif")
+death = tkinter.PhotoImage(file="death.gif")
 
 Picture = tkinter.Label(root, image=normalphoto)
 Picture.pack()

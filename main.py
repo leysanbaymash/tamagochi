@@ -201,6 +201,8 @@ def feed():
         global hunger
         if hunger <= 93:
             hunger += 7
+        else:
+            hunger = 100
 
 
 def sleep():
@@ -210,6 +212,8 @@ def sleep():
     if is_alive():
         if energy <= 80:
             energy += 20
+        else:
+            energy = 100
 
     sleepflag = 1
 
@@ -221,6 +225,8 @@ def play():
     if is_alive():
         if happy <= 90:
             happy += 10
+        else:
+            happy = 100
 
     playflag = 1
 

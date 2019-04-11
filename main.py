@@ -21,7 +21,7 @@ except FileExistsError:
 
 f.close()
 
-pressforstart = True  # проверяем, что кнопка начала работы была нажата единожды
+pressforstart = True
 feedflag = 0
 playflag = 0
 sleepflag = 0
@@ -44,7 +44,8 @@ class CustomDialog(object):
         label.pack(side="top", fill="x", padx=20, pady=10)
         entry.pack(side="top", fill="x", padx=20, pady=10)
 
-        ok = tkinter.Button(buttons, text="Ok", command=self.popup.destroy)
+        ok = tkinter.Button(buttons, text="Ok",
+                            command=self.popup.destroy)
         ok.pack(side="top")
 
         self.entry = entry
@@ -56,15 +57,18 @@ class CustomDialog(object):
 
 
 def cancel():
-    answer = mb.askyesno(title="Начать сначала", message="Ты уверен, что хочешь начать сначала?")
+    answer = mb.askyesno(title="Начать сначала",
+                         message="Ты уверен, что хочешь начать сначала?")
     if answer is True:
-        path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'save.txt')
+        path = os.path.join(os.path.abspath(os.path.dirname(__file__)),
+                            'save.txt')
         os.remove(path)
         exit()
 
 
 def exitgame():
-    answer = mb.askyesno(title="Выход из игры", message="Ты меня покидаешь?(")
+    answer = mb.askyesno(title="Выход из игры",
+                         message="Ты меня покидаешь?(")
     if answer is True:
         root.quit()
 
@@ -248,19 +252,28 @@ root = tkinter.Tk()
 root.title("Заечка")
 root.geometry("800x800")
 
-startLabel = tkinter.Label(root, text="Нажми enter;)", font=('Times New Roman', 20))
+startLabel = tkinter.Label(root, text="Нажми enter;)",
+                           font=('Times New Roman', 20))
 startLabel.pack()
 
-hungerLabel = tkinter.Label(root, text="Я сыт на " + str(hunger) + " %", font=('Times New Roman', 25))
+hungerLabel = tkinter.Label(root, text="Я сыт на "
+                                       + str(hunger) + " %",
+                            font=('Times New Roman', 25))
 hungerLabel.pack()
 
-yearLabel = tkinter.Label(root, text="Мне уже " + str(year) + year_end(), font=('Times New Roman', 25))
+yearLabel = tkinter.Label(root, text="Мне уже "
+                                     + str(year) + year_end(),
+                          font=('Times New Roman', 25))
 yearLabel.pack()
 
-energyLabel = tkinter.Label(root, text="Бодрость: " + str(energy) + " %", font=('Times New Roman', 25))
+energyLabel = tkinter.Label(root, text="Бодрость: "
+                                       + str(energy) + " %",
+                            font=('Times New Roman', 25))
 energyLabel.pack()
 
-happyLabel = tkinter.Label(root, text="Счастье: " + str(happy) + " %", font=('Times New Roman', 25))
+happyLabel = tkinter.Label(root, text="Счастье: "
+                                      + str(happy) + " %",
+                           font=('Times New Roman', 25))
 happyLabel.pack()
 
 happyphoto = tkinter.PhotoImage(file="happy.gif")
@@ -277,21 +290,26 @@ death = tkinter.PhotoImage(file="death.gif")
 Picture = tkinter.Label(root, image=normalphoto)
 Picture.pack()
 
-btnFeed = tkinter.Button(root, text="Покорми меня!", command=feed, font=('Times New Roman', 20))
+btnFeed = tkinter.Button(root, text="Покорми меня!", command=feed,
+                         font=('Times New Roman', 20))
 btnFeed.place(x=10, y=250)
 
-btnSleep = tkinter.Button(root, text="Уложи меня спать!", command=sleep, font=('Times New Roman', 20))
+btnSleep = tkinter.Button(root, text="Уложи меня спать!",
+                          command=sleep, font=('Times New Roman', 20))
 btnSleep.place(x=10, y=350)
 
-btnPlay = tkinter.Button(root, text="Поиграй со мной!", command=play, font=('Times New Roman', 20))
+btnPlay = tkinter.Button(root, text="Поиграй со мной!",
+                         command=play, font=('Times New Roman', 20))
 btnPlay.place(x=10, y=450)
 
 mainmenu = tkinter.Menu(root)
 root.config(menu=mainmenu)
 
 filemenu = tkinter.Menu(mainmenu, tearoff=0)
-filemenu.add_command(label="Сбросить и начать сначала", command=cancel)
-filemenu.add_command(label="Выход (автоматическое сохранение)", command=exitgame)
+filemenu.add_command(label="Сбросить и начать сначала",
+                     command=cancel)
+filemenu.add_command(label="Выход (автоматическое сохранение)",
+                     command=exitgame)
 
 helpmenu = tkinter.Menu(mainmenu, tearoff=0)
 helpmenu.add_command(label="Помощь", command=help)
@@ -305,7 +323,8 @@ if result == 0:
     result = dialog.show()
 
 
-nameLabel = tkinter.Label(root, text="Меня зовут " + str(result), font=('Times New Roman', 25))
+nameLabel = tkinter.Label(root, text="Меня зовут " + str(result),
+                          font=('Times New Roman', 25))
 nameLabel.pack()
 
 root.bind('<Return>', start_game)
